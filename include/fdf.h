@@ -6,7 +6,7 @@
 /*   By: nguiard <nguiard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 13:13:48 by nguiard           #+#    #+#             */
-/*   Updated: 2021/12/29 13:30:08 by nguiard          ###   ########.fr       */
+/*   Updated: 2022/01/04 03:21:32 by nguiard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "mlx.h"
 # include <stdlib.h>
 # include <stdio.h>
+#include "libft.h"
 
 # define ESC 65307
 
@@ -29,8 +30,9 @@ typedef struct s_mlx
 
 typedef struct s_co
 {
-	int x;
+	int	x;
 	int	y;
+	int	alt;
 }	t_co;
 
 typedef struct s_err
