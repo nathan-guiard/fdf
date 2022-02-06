@@ -6,71 +6,77 @@
 /*   By: nguiard <nguiard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 13:14:40 by nguiard           #+#    #+#             */
-/*   Updated: 2021/12/29 18:48:24 by nguiard          ###   ########.fr       */
+/*   Updated: 2022/01/31 12:19:57 by nguiard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void put_bg(t_mlx *mlx, int color, int x, int y)
+int	print_err(char *s)
 {
-	int ax;
-	int ay = 0;
-
-	while (ay < y)
-	{
-		ax = 0;
-		while (ax < x)
-			mlx_pixel_put(mlx->init, mlx->win, ax++, ay, color);
-		ay++;
-	}
-}	
-
-void put_cross(t_mlx *mlx, int x, int y)
-{
-	int curr_x = 0;
-	int curr_y = 0;
-
-	put_bg(mlx, 0x00002aff, x, y);
-	while (curr_y < y)
-	{
-		curr_x = 0;
-		while (curr_x < x)
-			mlx_pixel_put(mlx->init, mlx->win, curr_x ++, curr_y, 0xff000000);
-		curr_y += 50;
-	}
-	curr_x = 0;
-	while (curr_x < x)
-	{
-		curr_y = 0;
-		while (curr_y < y)
-			mlx_pixel_put(mlx->init, mlx->win, curr_x, curr_y++, 0xff000000);
-		curr_x += 50;
-	}
+	set_layout(C_RED, C_RESET, C_BOLD);
+	ft_putstr_fd(s, 2);
+	set_layout(C_RESET, C_RESET, C_RESET);
+	return (1);
 }
 
-int main(void)
+int	free_tabtabtab(char ***tab)
 {
-	t_mlx	*mlx = malloc(sizeof(t_mlx));
-	mlx->x = 500;
-	mlx->y = 500;
+	int	a;
+	int	b;
 
-	mlx->init = mlx_init();
-	mlx->win = mlx_new_window(mlx->init, mlx->x, mlx->y, "FdF");
-	
-	t_co a;
-	t_co b;
+	a = 0;
+	if (!tab)
+		exit(1);
+	while (tab[a])
+	{
+		b = 0;
+		while (tab[a][b])
+		{
+			free(tab[a][b]);
+			b++;
+		}
+		free(tab[a]);
+		a++;
+	}
+	free(tab[a]);
+	free(tab);
+	exit(0);
+}
 
-	a.x = 400;
-	a.y = 300;
-	a.alt = 10;
+t_all	get_all(t_mlx *mlx, t_info *info, t_img *img, char ***tab)
+{
+	t_all	res;
 
-	b.x = 200;
-	b.y = 200;
-	b.alt = 0;
-	all_line(mlx, a, b);
-	mlx_string_put(mlx->init, mlx->win, 100, 50, 0xffffffff, "Bonjour");
-	mlx_loop(mlx->init);
-	free(mlx);
+	res.mlx = mlx;
+	res.info = info;
+	res.img = img;
+	res.tab = tab;
+	return (res);
+}
+
+int	main(int argc, char **argv)
+{
+	char	***parsing_tab;
+	t_mlx	mlx;
+	t_img	img;
+	t_info	info;
+	t_all	all;
+
+	if (argc != 2)
+		return (print_err("Le nombre d'argument est different de 2!\n"));
+	parsing_tab = parsing_fdf(argv[1]);
+	if (check_parsing(parsing_tab) == 1)
+		return (free_tabtabtab(parsing_tab));
+	info = get_info(parsing_tab);
+	mlx = init_all_mlx(argv[1]);
+	img = init_all_img(&mlx);
+	all = get_all(&mlx, &info, &img, parsing_tab);
+	all_draw(&all);
+	mlx_mouse_hook(mlx.win, zoom, &all);
+	mlx_hook(mlx.win, 33, 0, quit_everything, &all);
+	mlx_key_hook(mlx.win, key_touched, &all);
+	mlx_loop(mlx.init);
+	quit_everything(&all, 1);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: nguiard <nguiard@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 14:54:18 by nguiard           #+#    #+#             */
-/*   Updated: 2022/01/04 03:00:35 by nguiard          ###   ########.fr       */
+/*   Updated: 2022/01/12 16:04:43 by nguiard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 
 # include <stdlib.h>
 # include <unistd.h>
+# include <stddef.h>
+# include <limits.h>
+# include <stdarg.h>
+# include <stdio.h>
 
 typedef struct s_list
 {
@@ -56,6 +60,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split(char const *s, char c);
+void	*free_all(char **s);
 char	*ft_itoa(int n);
 
 /* Pointeur sur fonction */
@@ -81,17 +86,13 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
 /* get_next_line */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+# ifndef GET_NEXT_LINE_H
+#  define GET_NEXT_LINE_H
 
-# define FD_MAX 1024
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1
-# endif
-
-# include <stddef.h>
-# include <stdlib.h>
-# include <unistd.h>
+#  define FD_MAX 1024
+#  ifndef BUFFER_SIZE
+#   define BUFFER_SIZE 500000
+#  endif
 
 /* get_next_line */
 char	*get_next_line(int fd);
@@ -105,17 +106,11 @@ char	*ft_strjoin_g(char *s1, char *s2);
 char	*ft_strchr_g(const char *s, int c);
 char	*join(char *rest, char *buff);
 
-#endif
+# endif
 
 /* ft_printf */
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
-
-# include <stdlib.h>
-# include <unistd.h>
-# include <stdarg.h>
-# include <stdio.h>
-# include <limits.h>
+# ifndef FT_PRINTF_H
+#  define FT_PRINTF_H
 
 /* Enum t_type */
 typedef enum e_type
@@ -132,10 +127,10 @@ typedef enum e_type
 }	t_type;
 
 /* Variables */
-# define HEX_MIN "0123456789abcdef"
-# define HEX_MAJ "0123456789ABCDEF"
-# define DEC "0123456789"
-# define TYPES "cspdiuxX%"
+#  define HEX_MIN "0123456789abcdef"
+#  define HEX_MAJ "0123456789ABCDEF"
+#  define DEC "0123456789"
+#  define TYPES "cspdiuxX%"
 
 /* Parsing */
 t_type	*parsing(const char *s);
@@ -153,6 +148,57 @@ int		count_putptr(void *n);
 
 /* PRINTF */
 int		ft_printf(const char *s, ...);
-#endif
+# endif
+
+/* ft_colors */
+# ifndef FT_COLORS_H
+#  define FT_COLORS_H
+
+#  define C_BOLD 1
+#  define C_FADED 2
+#  define C_ITALIC 3
+#  define C_UNDERLINE 4
+#  define C_BLINK 5
+#  define C_BLINKOFF 25
+#  define C_REVERSE 7
+#  define C_HIDE 8
+#  define C_CROSSED 9
+
+#  define C_BLACK 0
+#  define C_RED 1
+#  define C_GREEN 2
+#  define C_YELLOW 3
+#  define C_BLUE 4
+#  define C_MAGENTA 5
+#  define C_CYAN 6
+#  define C_WHITE 7
+#  define C_GREY 8
+#  define C_HBLACK 8
+#  define C_HRED 9
+#  define C_HGREN 10
+#  define C_HYELLOW 11
+#  define C_HBLUE 12
+#  define C_HMAGENTA 13
+#  define C_HCYAN 14
+#  define C_HWHITE 15
+
+#  define C_RESET 42000
+
+#  define C_BASE "\033["
+#  define C_BG "48;5;"
+#  define C_FG "38;5;"
+#  define C_BGRESET "49;"
+#  define C_FGRESET "39m"
+
+/* Fonctions de base */
+void	set_layout(unsigned int fg, unsigned int bg, unsigned int style);
+void	delete_std(int n);
+
+/* Need printf */
+void	set_layout_printf(unsigned int fg, unsigned int bg, unsigned int style);
+void	delete_std_printf(int n);
+void	loading_bar(int progression);
+
+# endif
 
 #endif
